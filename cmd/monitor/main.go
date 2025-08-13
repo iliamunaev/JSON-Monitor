@@ -3,54 +3,36 @@ package main
 import (
 	"context"
 	"fmt"
-	"io"
+	// "fmt"
+	// "io"
+	"os"
 	"log"
-	"net/http"
+	// "net/http"
 
-	"github.com/redis/go-redis/v9"
+	// "github.com/redis/go-redis/v9"
+	"github.com/joho/godotenv"
 
-    "fetcher"
+	"github.com/iliamunaev/monitor-wep-page/internal/fetcher"
 )
 
 var ctx = context.Background()
 
 func main() {
 
-	// Connect to Redis
-	rdb := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379", // Redis address
-		Password: "",               // No password by default
-		DB:       0,                // Default DB
-	})
+	// Fetch JSON
+	_ = godotenv.Load("../../.env")
+	url := os.Getenv("SERVICE_URL")
 
-	// Fetch current JSON
-	resp, err := http.Get(url)
-	if err != nil {
-		log.Fatal("Failed to fetch JSON:", err)
-	}
-	defer resp.Body.Close()
+    data, err := fetcher.FetchJSON(url)
+    if err != nil {
+        log.Fatal("Failed to fetch JSON:", err)
+    }
+    fmt.Println(string(data))
 
+    // Upload to Redis
 
+    // Compare
 
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatal("Failed to read response body:", err)
-	}
+    // Notify if changes
 
-	// Get last stored JSON from Redis
-	lastData, err := rdb.Get(ctx, "services.json:last").Result()
-	if err == redis.Nil {
-		fmt.Println("First run — storing data.")
-	} else if err != nil {
-		log.Fatal("Redis error:", err)
-	} else if lastData != string(body) {
-		fmt.Println("⚠ JSON has changed!")
-	} else {
-		fmt.Println("✅ No changes detected.")
-	}
-
-	// Save new JSON
-	if err := rdb.Set(ctx, "services.json:last", body, 0).Err(); err != nil {
-		log.Fatal("Failed to store JSON:", err)
-	}
 }

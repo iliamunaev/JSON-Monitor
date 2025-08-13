@@ -1,4 +1,4 @@
-module cmd/monitor
+module github.com/iliamunaev/monitor-wep-page
 
 go 1.24.3
 
