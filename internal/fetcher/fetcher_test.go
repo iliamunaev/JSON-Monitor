@@ -8,9 +8,14 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func TestFetchJSON(t *testing.T) {
-	_ = godotenv.Load("../.env")
+func init() {
+	err := godotenv.Load("../../.env")
+	if err != nil {
+		fmt.Println("Warning: could not load .env file:", err)
+	}
+}
 
+func TestFetchJSON(t *testing.T) {
 	url := os.Getenv("SERVICE_URL")
 	if url == "" {
 		t.Fatal("SERVICE_URL is not set")
@@ -23,5 +28,6 @@ func TestFetchJSON(t *testing.T) {
 	if len(data) == 0 {
 		t.Fatal("Received empty JSON")
 	}
+
 	fmt.Println(string(data))
 }

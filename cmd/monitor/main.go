@@ -1,38 +1,55 @@
 package main
 
 import (
-	"context"
-	"fmt"
-	// "fmt"
-	// "io"
-	"os"
 	"log"
-	// "net/http"
+	"os"
+	"reflect"
+	"time"
 
-	// "github.com/redis/go-redis/v9"
+	"github.com/iliamunaev/json-monitor/internal/builder"
+	"github.com/iliamunaev/json-monitor/internal/fetcher"
 	"github.com/joho/godotenv"
-
-	"github.com/iliamunaev/monitor-wep-page/internal/fetcher"
 )
 
-var ctx = context.Background()
+func init() {
+	_ = godotenv.Load("../../.env")
+}
 
 func main() {
+	url, ok := os.LookupEnv("SERVICE_URL")
+	if !ok || url == "" {
+		log.Fatal("Error: SERVICE_URL is not set")
+	}
 
-	// Fetch JSON
-	_ = godotenv.Load("../../.env")
-	url := os.Getenv("SERVICE_URL")
+	interval := 10 * time.Second
 
-    data, err := fetcher.FetchJSON(url)
-    if err != nil {
-        log.Fatal("Failed to fetch JSON:", err)
-    }
-    fmt.Println(string(data))
+	var prev any
 
-    // Upload to Redis
+	for {
+		raw, err := fetcher.FetchJSON(url)
+		if err != nil {
+			log.Printf("Fetch error: %v", err)
+			time.Sleep(interval)
+			continue
+		}
 
-    // Compare
+		cur, err := builder.NormalizeJSON(raw)
+		if err != nil {
+			log.Printf("Normalize error: %v", err)
+			time.Sleep(interval)
+			continue
+		}
 
-    // Notify if changes
+		if prev == nil {
+			log.Println("Initial fetch complete")
+		} else if !reflect.DeepEqual(prev, cur) {
+			log.Println("Changes detected!")
 
+		} else {
+			log.Println("No changes")
+		}
+
+		prev = cur
+		time.Sleep(interval)
+	}
 }
