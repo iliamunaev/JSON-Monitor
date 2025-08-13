@@ -21,7 +21,7 @@ func main() {
 		log.Fatal("Error: SERVICE_URL is not set")
 	}
 
-	interval := 10 * time.Second
+	interval := 300 * time.Second
 
 	var prev any
 
