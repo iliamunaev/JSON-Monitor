@@ -24,4 +24,3 @@ func CompareJSONs(j1, j2 any) (bool, error) {
 		return false, nil
 	}
 }
-
