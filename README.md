@@ -1,6 +1,5 @@
 # JSON-Monitor
 
-## (In progress)
 A small Go service that polls a JSON endpoint and detects real data change
 with [reflect.DeepEqual](https://pkg.go.dev/reflect#DeepEqual)
 
