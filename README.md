@@ -7,6 +7,6 @@ A small Go service that polls a JSON endpoint and detects real data change
 ```bash
 git clone https://github.com/iliamunaev/JSON-Monitor
 cd JSON-Monitor
-export SERVICE_URL="https://example.com/data.json"
+export URL="https://example.com/data.json" SECONDS_TIMEOUT=60 # setup brake between requests
 go run ./cmd/monitor
 ```

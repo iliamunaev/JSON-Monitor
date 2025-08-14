@@ -3,25 +3,29 @@ package main
 import (
 	"log"
 	"os"
-	"reflect"
 	"time"
+	"strconv"
+	"strings"
 
 	"github.com/iliamunaev/json-monitor/internal/builder"
 	"github.com/iliamunaev/json-monitor/internal/fetcher"
-	"github.com/joho/godotenv"
+	"github.com/iliamunaev/json-monitor/internal/comparator"
 )
 
-func init() {
-	_ = godotenv.Load("../../.env")
-}
-
 func main() {
-	url, ok := os.LookupEnv("SERVICE_URL")
-	if !ok || url == "" {
-		log.Fatal("Error: SERVICE_URL is not set")
+	url := os.Getenv("URL")
+	if strings.Compare(url, "") == 0 {
+		log.Fatal("URL is not set up")
 	}
 
-	interval := 300 * time.Second
+	secondsStr := os.Getenv("SECONDS_TIMEOUT")
+	seconds, err := strconv.Atoi(secondsStr)
+	if err != nil || seconds <= 30 {
+		seconds = 59
+	}
+
+	interval := time.Duration(seconds) * time.Second
+	log.Printf("Interval set to %v\n", interval)
 
 	var prev any
 
@@ -41,12 +45,12 @@ func main() {
 		}
 
 		if prev == nil {
+			prev = cur
 			log.Println("Initial fetch complete")
-		} else if !reflect.DeepEqual(prev, cur) {
-			log.Println("Changes detected!")
+			comparator.CompareJSONs(cur, prev)
 
 		} else {
-			log.Println("No changes")
+			comparator.CompareJSONs(cur, prev)
 		}
 
 		prev = cur
