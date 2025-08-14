@@ -1,20 +1,20 @@
 package fetcher
 
 import (
-	"fmt"
-	"log"
-	"os"
-	"strings"
+	"net/http"
+	"net/http/httptest"
 	"testing"
 )
 
 func TestFetchJSON(t *testing.T) {
-	url := os.Getenv("URL")
-	if strings.Compare(url, "") == 0 {
-		log.Fatal("URL is not set up")
-	}
+	// Create a fake JSON API endpoint
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(`{"school":"42"}`))
+	}))
+	defer ts.Close()
 
-	data, err := FetchJSON(url)
+	data, err := FetchJSON(ts.URL)
 	if err != nil {
 		t.Fatalf("Failed to fetch JSON: %v", err)
 	}
@@ -22,5 +22,8 @@ func TestFetchJSON(t *testing.T) {
 		t.Fatal("Received empty JSON")
 	}
 
-	fmt.Println(string(data))
+	expected := `{"school":"42"}`
+	if string(data) != expected {
+		t.Fatalf("Expected %q, got %q", expected, string(data))
+	}
 }
