@@ -3,13 +3,13 @@ package main
 import (
 	"log"
 	"os"
-	"time"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/iliamunaev/json-monitor/internal/builder"
-	"github.com/iliamunaev/json-monitor/internal/fetcher"
 	"github.com/iliamunaev/json-monitor/internal/comparator"
+	"github.com/iliamunaev/json-monitor/internal/fetcher"
 )
 
 func main() {

@@ -2,23 +2,16 @@ package fetcher
 
 import (
 	"fmt"
+	"log"
 	"os"
+	"strings"
 	"testing"
-
-	"github.com/joho/godotenv"
 )
 
-func init() {
-	err := godotenv.Load("../../.env")
-	if err != nil {
-		fmt.Println("Warning: could not load .env file:", err)
-	}
-}
-
 func TestFetchJSON(t *testing.T) {
-	url := os.Getenv("SERVICE_URL")
-	if url == "" {
-		t.Fatal("SERVICE_URL is not set")
+	url := os.Getenv("URL")
+	if strings.Compare(url, "") == 0 {
+		log.Fatal("URL is not set up")
 	}
 
 	data, err := FetchJSON(url)

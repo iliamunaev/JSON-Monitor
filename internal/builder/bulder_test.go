@@ -43,17 +43,16 @@ func TestNormalizeJSON(t *testing.T) {
 	assert.IsType(t, []any{}, root["organizations"], "organizations should be an array")
 	assert.NotEmpty(t, root["organizations"].([]any), "organizations array should not be empty")
 
-
 	// Take the first organization object from the array
 	orgs := root["organizations"].([]any) // type assert to slice
-	first, ok := orgs[0].(map[string]any)     // type assert the first element
+	first, ok := orgs[0].(map[string]any) // type assert the first element
 	if !ok {
 		t.Fatalf("expected organizations[0] to be object, got %T", orgs[0])
 	}
 
 	assert.Equal(t, float64(1), first["orgID"], "orgID should be `1`")
-	assert.Equal(t, "helsinki" , first["orgName"] , "orgName should be `helsinki`")
-	assert.Equal(t, "Helsingfors" , first["orgNameSe"] , "orgNameSe should be `Helsingfors`")
+	assert.Equal(t, "helsinki", first["orgName"], "orgName should be `helsinki`")
+	assert.Equal(t, "Helsingfors", first["orgNameSe"], "orgNameSe should be `Helsingfors`")
 
 	fmt.Println(v)
 }
