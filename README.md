@@ -21,8 +21,8 @@ Formatting differences (whitespace, indentation) are ignored because they are re
 ```bash
 git clone https://github.com/iliamunaev/JSON-Monitor
 cd JSON-Monitor
-# replace URL with an actual endpoint
-export URL="https://example.com/data.json" SECONDS_TIMEOUT=60 # setup break between requests
+export URL="https://example.com/data.json" # replace URL with an actual endpoint
+export SECONDS_TIMEOUT=60 # setup break between requests
 go run ./cmd/monitor
 ```
 
